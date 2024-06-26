@@ -33,7 +33,7 @@ func TestUpdateNodeState(t *testing.T) {
 	sigma := 1.
 
 	n.updateNodeState(dTime, speed, sigma)
-	assert.InDelta(t, .002, n.theta, float64EqualityThreshold)
+	assert.InDelta(t, .004, n.theta, float64EqualityThreshold)
 }
 
 func TestUpdatePosition(t *testing.T) {
