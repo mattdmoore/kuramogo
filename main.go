@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	nMin int = 2
 	nMax int = 500
 
 	dTime float64 = .002

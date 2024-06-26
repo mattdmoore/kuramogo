@@ -8,7 +8,7 @@ import (
 )
 
 func makeSliders(_ fyne.Window, r *renderer) fyne.CanvasObject {
-	nSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.n), 2, float64(nMax), "%.0f", "N")
+	nSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.n), float64(nMin), float64(nMax), "%.0f", "N")
 	speedSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.speed), 0, 1, "%.3f", "Speed")
 	couplingSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.k), 0, 1, "%.3f", "Coupling")
 	variabilitySlider := makeBoundSliderWithLabel(binding.BindFloat(&r.sigma), 0, 1, "%.3f", "Variability")
@@ -28,7 +28,7 @@ func makeBoundSliderWithLabel(
 	format string,
 	variableName string) fyne.CanvasObject {
 	slider := widget.NewSliderWithData(min, max, boundVariable)
-	slider.Step = .001
+	slider.Step = max / 1000
 	label := widget.NewLabelWithData(
 		binding.FloatToStringWithFormat(boundVariable, variableName+": \t"+format),
 	)
