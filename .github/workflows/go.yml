@@ -20,10 +20,10 @@ jobs:
     - name: Install graphics drivers
       run: |
         sudo apt-get update
-        sudo apt-get install libgl1-mesa-dev xorg-dev
+        sudo apt-get install -y libgl1-mesa-dev xorg-dev
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version: '1.22'
         cache-dependency-path: go.sum
@@ -40,3 +40,16 @@ jobs:
         go test -coverprofile coverage.out -covermode count -coverpkg=./... -v ./... 
         go-ignore-cov --file coverage.out
         go tool cover -func=coverage.out
+
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
