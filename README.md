@@ -5,10 +5,13 @@ An interactive app visualising the Kuramoto model for phase coupled oscillators 
 ### Installation
 
 Install Go and Fyne dependencies:
-    `sudo apt install golang gcc libgl1-mesa-dev xorg-dev`
+
+`sudo apt install golang gcc libgl1-mesa-dev xorg-dev`
 
 Install Go packages:
-    `go mod download`
 
-Run:
-    `go run .`
+`go mod download`
+
+Run application:
+
+`go run .`
