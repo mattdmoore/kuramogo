@@ -1,3 +1,5 @@
+![build](https://github.com/mattdmoore/kuramogo/actions/workflows/go.yml/badge.svg)
+
 # Kuramogo
 
 An interactive app visualising the Kuramoto model for phase coupled oscillators written in Go using the [Fyne](https://fyne.io/) GUI library. Based on the [Ride my Kuramotocycle!](https://www.complexity-explorables.org/explorables/ride-my-kuramotocycle/) explorable by Dirk Brockmann and Steven Strogatz.
