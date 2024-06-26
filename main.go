@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	Nmax int = 1000
+	Nmax int = 500
 
 	dTime       float64 = .001
 	maxSpeed    float64 = 10

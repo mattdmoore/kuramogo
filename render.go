@@ -62,7 +62,7 @@ func (r *renderer) render() *fyne.Container {
 }
 
 func (r *renderer) animate(co fyne.CanvasObject) {
-	tick := time.NewTicker(time.Second / 144)
+	tick := time.NewTicker(time.Second / 60)
 	go func() {
 		for {
 			<-tick.C
