@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	n int = 500
+	nMax int = 500
 
 	dTime float64 = .002
 
@@ -26,6 +26,7 @@ func main() {
 	window := a.NewWindow("Kuramogo")
 
 	kuramotoRenderer := &renderer{
+		n:     float64(nMax),
 		k:     defaultCoupling,
 		speed: defaultSpeed,
 		sigma: defaultVariability,

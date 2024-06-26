@@ -8,11 +8,13 @@ import (
 )
 
 func makeSliders(_ fyne.Window, r *renderer) fyne.CanvasObject {
-	speedSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.speed), "Speed")
-	couplingSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.k), "Coupling")
-	variabilitySlider := makeBoundSliderWithLabel(binding.BindFloat(&r.sigma), "Variability")
+	nSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.n), 2, float64(nMax), "%.0f", "N")
+	speedSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.speed), 0, 1, "%.3f", "Speed")
+	couplingSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.k), 0, 1, "%.3f", "Coupling")
+	variabilitySlider := makeBoundSliderWithLabel(binding.BindFloat(&r.sigma), 0, 1, "%.3f", "Variability")
 
 	return container.NewVBox(
+		nSlider,
 		speedSlider,
 		couplingSlider,
 		variabilitySlider,
@@ -21,11 +23,14 @@ func makeSliders(_ fyne.Window, r *renderer) fyne.CanvasObject {
 
 func makeBoundSliderWithLabel(
 	boundVariable binding.ExternalFloat,
+	min float64,
+	max float64,
+	format string,
 	variableName string) fyne.CanvasObject {
-	slider := widget.NewSliderWithData(0, 1, boundVariable)
-	slider.Step = .01
+	slider := widget.NewSliderWithData(min, max, boundVariable)
+	slider.Step = .001
 	label := widget.NewLabelWithData(
-		binding.FloatToStringWithFormat(boundVariable, variableName+": \t%.2f"),
+		binding.FloatToStringWithFormat(boundVariable, variableName+": \t"+format),
 	)
 	return container.NewVBox(label, slider)
 }

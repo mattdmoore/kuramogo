@@ -13,8 +13,9 @@ import (
 
 type renderer struct {
 	canvas fyne.CanvasObject
-	nodes  [n]*node
+	nodes  [nMax]*node
 
+	n     float64
 	k     float64
 	speed float64
 	sigma float64
@@ -25,7 +26,8 @@ func (r *renderer) Layout(_ []fyne.CanvasObject, size fyne.Size) {
 	radius := fyne.Min(size.Width, size.Height) * .5
 
 	x, y := r.getMeanNodePosition()
-	for _, n := range r.nodes {
+	for i, n := range r.nodes {
+		n.active = i < int(r.n)
 		n.kuramoto(r.k, x, y)
 		n.updateNodeState(dTime, r.speed, r.sigma)
 		n.updatePosition(radius, middle)
@@ -39,7 +41,7 @@ func (r *renderer) getMeanNodePosition() (float64, float64) {
 		sumX += node.x
 		sumY += node.y
 	}
-	return float64(sumX) / float64(n), float64(sumY) / float64(n)
+	return float64(sumX) / r.n, float64(sumY) / r.n
 }
 
 func (r *renderer) MinSize(_ []fyne.CanvasObject) fyne.Size {
