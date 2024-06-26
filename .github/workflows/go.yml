@@ -14,7 +14,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    - name: Install graphics drivers
+      run: |
+        sudo apt-get update
+        sudo apt-get install libgl1-mesa-dev xorg-devgl
 
     - name: Set up Go
       uses: actions/setup-go@v4
