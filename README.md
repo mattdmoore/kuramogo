@@ -15,3 +15,7 @@ Install Go packages:
 Run application:
 
 `go run .`
+
+### Demo
+
+![Demo](https://github.com/mattdmoore/kuramogo/assets/50421723/93c7a96d-aeb5-4686-9d08-7681ed148611)
