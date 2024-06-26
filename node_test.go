@@ -14,6 +14,7 @@ func TestKuramoto(t *testing.T) {
 	n := node{
 		circle: canvas.Circle{},
 		dOmega: .7,
+		active: true,
 	}
 	k := 1.5 / maxCoupling
 
@@ -26,6 +27,7 @@ func TestUpdateNodeState(t *testing.T) {
 	n := node{
 		circle: canvas.Circle{},
 		dOmega: .7,
+		active: true,
 	}
 	n.dx = .3
 
@@ -40,6 +42,7 @@ func TestUpdatePosition(t *testing.T) {
 	n := node{
 		circle: canvas.Circle{},
 		dOmega: .7,
+		active: true,
 	}
 	n.x, n.y = 0, 1
 
