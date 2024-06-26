@@ -13,43 +13,50 @@ import (
 
 type renderer struct {
 	canvas fyne.CanvasObject
-	nodes  [Nmax]*node
+	nodes  [n]*node
+
+	k     float64
+	speed float64
+	sigma float64
 }
 
 func (r *renderer) Layout(_ []fyne.CanvasObject, size fyne.Size) {
-	middle := fyne.NewPos(size.Width/2, size.Height/2)
-	radius := fyne.Min(size.Width, size.Height) / 2
+	middle := fyne.NewPos(size.Width*.5, size.Height*.5)
+	radius := fyne.Min(size.Width, size.Height) * .5
 
 	x, y := r.getMeanNodePosition()
 	for _, n := range r.nodes {
-		n.kuramoto(K, x, y)
-		n.updateNodeState(dTime)
+		n.kuramoto(r.k, x, y)
+		n.updateNodeState(dTime, r.speed, r.sigma)
 		n.updatePosition(radius, middle)
-		n.redraw()
+		n.redraw(r.sigma)
 	}
 }
 
 func (r *renderer) getMeanNodePosition() (float64, float64) {
-	sumX, sumY := float32(0), float32(0)
-	N := float64(Nmax)
-	for _, n := range r.nodes {
-		sumX += n.x
-		sumY += n.y
+	var sumX, sumY float32 = 0, 0
+	for _, node := range r.nodes {
+		sumX += node.x
+		sumY += node.y
 	}
-	return float64(sumX) / N, float64(sumY) / N
+	return float64(sumX) / float64(n), float64(sumY) / float64(n)
 }
 
 func (r *renderer) MinSize(_ []fyne.CanvasObject) fyne.Size {
-	return fyne.NewSize(600, 600)
+	var radius float32 = 600
+	return fyne.NewSize(radius, radius)
 }
 
 func (r *renderer) render() *fyne.Container {
 	container := container.NewWithoutLayout()
+
+	var nodeSize float32 = 8
 	for i := range r.nodes {
 		dOmega := rand.Float64() - .5
 		r.nodes[i] = &node{
 			circle: canvas.Circle{},
-			dOmega: dOmega * sigma,
+			size:   fyne.NewSize(nodeSize, nodeSize),
+			dOmega: dOmega * r.sigma,
 			theta:  rand.Float64() * 2 * math.Pi,
 			jitter: rand.Float32(),
 		}
@@ -62,11 +69,12 @@ func (r *renderer) render() *fyne.Container {
 }
 
 func (r *renderer) animate(co fyne.CanvasObject) {
-	tick := time.NewTicker(time.Second / 60)
+	var refreshRate time.Duration = 60
+	tick := time.NewTicker(time.Second / refreshRate)
 	go func() {
 		for {
-			<-tick.C
 			r.Layout(nil, co.Size())
+			<-tick.C
 		}
 	}()
 }

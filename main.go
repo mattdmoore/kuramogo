@@ -8,32 +8,39 @@ import (
 )
 
 const (
-	Nmax int = 500
+	n int = 500
 
-	dTime       float64 = .001
-	maxSpeed    float64 = 10
-	maxCoupling float64 = 3
-)
+	dTime float64 = .002
 
-var (
-	x, y float32
-	K    float64
+	defaultSpeed float64 = .6
+	maxSpeed     float64 = 10
 
-	speed float64 = .5
-	sigma float64 = .75
+	defaultCoupling float64 = 0
+	maxCoupling     float64 = 3
+
+	defaultVariability float64 = 1
 )
 
 func main() {
 	a := app.New()
-	w := a.NewWindow("Kuramogo")
+	window := a.NewWindow("Kuramogo")
 
-	kuramotoRenderer := &renderer{}
+	kuramotoRenderer := &renderer{
+		k:     defaultCoupling,
+		speed: defaultSpeed,
+		sigma: defaultVariability,
+	}
 	content := kuramotoRenderer.render()
 	go kuramotoRenderer.animate(content)
 
-	controlPanel := makeSliders(w)
+	controlPanel := makeSliders(window, kuramotoRenderer)
 
-	w.SetContent(container.NewVBox(content, controlPanel))
-	w.Resize(fyne.NewSize(960, 720))
-	w.ShowAndRun()
+	window.SetContent(container.NewVBox(content, controlPanel))
+
+	var width float32 = 960
+	var height float32 = 720
+	windowSize := fyne.NewSize(width, height)
+
+	window.Resize(windowSize)
+	window.ShowAndRun()
 }

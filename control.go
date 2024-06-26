@@ -7,10 +7,10 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func makeSliders(_ fyne.Window) fyne.CanvasObject {
-	speedSlider := makeBoundSliderWithLabel(binding.BindFloat(&speed), "Speed")
-	couplingSlider := makeBoundSliderWithLabel(binding.BindFloat(&K), "Coupling")
-	variabilitySlider := makeBoundSliderWithLabel(binding.BindFloat(&sigma), "Variability")
+func makeSliders(_ fyne.Window, r *renderer) fyne.CanvasObject {
+	speedSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.speed), "Speed")
+	couplingSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.k), "Coupling")
+	variabilitySlider := makeBoundSliderWithLabel(binding.BindFloat(&r.sigma), "Variability")
 
 	return container.NewVBox(
 		speedSlider,
