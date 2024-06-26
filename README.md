@@ -1,1 +1,14 @@
-# kuramogo
+# Kuramogo
+
+An interactive app visualising the Kuramoto model for phase coupled oscillators written in Go using the [Fyne](https://fyne.io/) GUI library. Based on the [Ride my Kuramotocycle!](https://www.complexity-explorables.org/explorables/ride-my-kuramotocycle/) explorable by Dirk Brockmann and Steven Strogatz.
+
+### Installation
+
+Install Go and Fyne dependencies:
+    `sudo apt install golang gcc libgl1-mesa-dev xorg-dev`
+
+Install Go packages:
+    `go mod download`
+
+Run:
+    `go run .`
