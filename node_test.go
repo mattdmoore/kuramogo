@@ -17,7 +17,8 @@ var defaultNode node = node{
 
 func TestKuramoto(t *testing.T) {
 	n := defaultNode
-	K := 1.5
+	K := 1.5 / maxCoupling
+
 	x, y := .1, .2
 	n.kuramoto(K, x, y)
 	assert.InDelta(t, .3, n.dx, float64EqualityThreshold)
@@ -26,13 +27,12 @@ func TestKuramoto(t *testing.T) {
 func TestUpdateNodeState(t *testing.T) {
 	n := defaultNode
 	n.dx = .3
-	dt := .003
 
-	speed = 1
+	speed = 1 / maxSpeed
 	sigma = 1
 
-	n.updateNodeState(dt)
-	assert.InDelta(t, .006, n.theta, float64EqualityThreshold)
+	n.updateNodeState(dTime)
+	assert.InDelta(t, .002, n.theta, float64EqualityThreshold)
 }
 
 func TestUpdatePosition(t *testing.T) {

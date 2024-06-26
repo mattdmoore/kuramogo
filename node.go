@@ -45,6 +45,7 @@ func (n *node) updatePosition(radius float32, middle fyne.Position) {
 	n.circle.Move(fyne.NewPos(x, y))
 }
 
+//coverage:ignore
 func (n *node) redraw() {
 	n.circle.FillColor = color.CMYK{
 		uint8((n.dOmega + .5) * math.Pow(2, 8) * sigma),
