@@ -4,6 +4,7 @@ import (
 	"math"
 	"math/rand"
 	"testing"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -75,4 +76,27 @@ func TestRenderCreatesContent(t *testing.T) {
 
 	content := testRenderer.render()
 	assert.NotNil(t, content)
+}
+
+func TestAnimate(t *testing.T) {
+	parameters := &parameters{
+		nodeCount:   defaultNodeCount,
+		speed:       defaultSpeed,
+		coupling:    defaultCoupling,
+		variability: defaultVariability,
+	}
+
+	testRenderer := setup()
+	testRenderer.render()
+	go testRenderer.animate(parameters)
+
+	probeRate := time.Duration(30)
+	tick := time.NewTicker(time.Second / probeRate)
+	for range probeRate {
+		xPrev := testRenderer.nodes[0].x
+		yPrev := testRenderer.nodes[0].y
+		<-tick.C
+		assert.NotEqual(t, xPrev, testRenderer.nodes[0].x)
+		assert.NotEqual(t, yPrev, testRenderer.nodes[0].y)
+	}
 }

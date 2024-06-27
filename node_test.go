@@ -47,6 +47,24 @@ func TestKuramotoUncoupled(t *testing.T) {
 	assert.InDelta(t, 0, n.dx, float64EqualityThreshold)
 }
 
+func TestKuramotoInactive(t *testing.T) {
+	n := node{
+		dOmega: .7,
+		active: false,
+	}
+
+	parameters := &parameters{
+		nodeCount:   defaultNodeCount,
+		coupling:    1.5 / maxCoupling,
+		speed:       defaultSpeed,
+		variability: defaultVariability,
+	}
+
+	x, y := .1, .2
+	n.kuramoto(*parameters, x, y)
+	assert.Zero(t, n.dx)
+}
+
 func TestPosition(t *testing.T) {
 	n := node{
 		circle: canvas.Circle{},
