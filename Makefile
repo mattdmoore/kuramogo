@@ -1,6 +1,6 @@
 install:
 	go get .
-	go install github.com/hexira/go-ignore-cov@v0.3.0
+	go install github.com/quantumcycle/go-ignore-cov@v0.4.0
 
 build:
 	go build -v ./...
