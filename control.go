@@ -28,7 +28,7 @@ func makeBoundSliderWithLabel(
 	min float64,
 	max float64,
 	format string,
-	variableName string) fyne.CanvasObject {
+	variableName string) *fyne.Container {
 	boundVariable := binding.BindFloat(variable)
 	slider := widget.NewSliderWithData(min, max, boundVariable)
 	slider.Step = max / sliderSteps
