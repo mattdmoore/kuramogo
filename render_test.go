@@ -99,4 +99,12 @@ func TestAnimate(t *testing.T) {
 		assert.NotEqual(t, xPrev, testRenderer.nodes[0].x)
 		assert.NotEqual(t, yPrev, testRenderer.nodes[0].y)
 	}
+
+	for i, n := range testRenderer.nodes {
+		if i < int(parameters.nodeCount) {
+			assert.True(t, n.active)
+		} else {
+			assert.False(t, n.active)
+		}
+	}
 }
