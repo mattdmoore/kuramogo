@@ -8,41 +8,42 @@ import (
 )
 
 const (
-	nMin int = 2
-	nMax int = 500
+	minNodes int = 2
+	maxNodes int = 500
 
-	dTime float64 = .002
-
-	defaultSpeed float64 = .6
-	maxSpeed     float64 = 10
-
-	defaultCoupling float64 = 0
-	maxCoupling     float64 = 3
-
+	defaultNodeCount   float64 = 200
+	defaultSpeed       float64 = .6
+	defaultCoupling    float64 = 0
 	defaultVariability float64 = 1
+
+	width  float32 = 960
+	height float32 = 720
 )
+
+type parameters struct {
+	nodeCount   float64
+	speed       float64
+	coupling    float64
+	variability float64
+}
 
 func main() {
 	a := app.New()
 	window := a.NewWindow("Kuramogo")
-
-	kuramotoRenderer := &renderer{
-		n:     float64(nMax),
-		k:     defaultCoupling,
-		speed: defaultSpeed,
-		sigma: defaultVariability,
+	parameters := &parameters{
+		nodeCount:   defaultNodeCount,
+		speed:       defaultSpeed,
+		coupling:    defaultCoupling,
+		variability: defaultVariability,
 	}
-	content := kuramotoRenderer.render()
-	go kuramotoRenderer.animate(content)
 
-	controlPanel := makeSliders(window, kuramotoRenderer)
+	kuramotoRenderer := &renderer{}
+	content := kuramotoRenderer.render()
+	go kuramotoRenderer.animate(parameters)
+
+	controlPanel := makeSliders(window, parameters)
 
 	window.SetContent(container.NewVBox(content, controlPanel))
-
-	var width float32 = 960
-	var height float32 = 720
-	windowSize := fyne.NewSize(width, height)
-
-	window.Resize(windowSize)
+	window.Resize(fyne.NewSize(width, height))
 	window.ShowAndRun()
 }

@@ -7,11 +7,13 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func makeSliders(_ fyne.Window, r *renderer) fyne.CanvasObject {
-	nSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.n), float64(nMin), float64(nMax), "%.0f", "N")
-	speedSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.speed), 0, 1, "%.3f", "Speed")
-	couplingSlider := makeBoundSliderWithLabel(binding.BindFloat(&r.k), 0, 1, "%.3f", "Coupling")
-	variabilitySlider := makeBoundSliderWithLabel(binding.BindFloat(&r.sigma), 0, 1, "%.3f", "Variability")
+const sliderSteps float64 = 500
+
+func makeSliders(_ fyne.Window, p *parameters) fyne.CanvasObject {
+	nSlider := makeBoundSliderWithLabel(&p.nodeCount, float64(minNodes), float64(maxNodes), "%.0f", "N")
+	speedSlider := makeBoundSliderWithLabel(&p.speed, 0, 1, "%.3f", "Speed")
+	couplingSlider := makeBoundSliderWithLabel(&p.coupling, 0, 1, "%.3f", "Coupling")
+	variabilitySlider := makeBoundSliderWithLabel(&p.variability, 0, 1, "%.3f", "Variability")
 
 	return container.NewVBox(
 		nSlider,
@@ -22,13 +24,14 @@ func makeSliders(_ fyne.Window, r *renderer) fyne.CanvasObject {
 }
 
 func makeBoundSliderWithLabel(
-	boundVariable binding.ExternalFloat,
+	variable *float64,
 	min float64,
 	max float64,
 	format string,
 	variableName string) fyne.CanvasObject {
+	boundVariable := binding.BindFloat(variable)
 	slider := widget.NewSliderWithData(min, max, boundVariable)
-	slider.Step = max / float64(nMax)
+	slider.Step = max / sliderSteps
 	label := widget.NewLabelWithData(
 		binding.FloatToStringWithFormat(boundVariable, variableName+": \t"+format),
 	)

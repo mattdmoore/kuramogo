@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image/color"
 	"testing"
 
 	"fyne.io/fyne/v2"
@@ -10,45 +11,107 @@ import (
 
 const float64EqualityThreshold = 1e-9
 
-func TestKuramoto(t *testing.T) {
+func TestKuramotoCoupled(t *testing.T) {
 	n := node{
-		circle: canvas.Circle{},
 		dOmega: .7,
 		active: true,
 	}
-	k := 1.5 / maxCoupling
+
+	parameters := &parameters{
+		nodeCount:   defaultNodeCount,
+		coupling:    1.5 / maxCoupling,
+		speed:       defaultSpeed,
+		variability: defaultVariability,
+	}
 
 	x, y := .1, .2
-	n.kuramoto(k, x, y)
+	n.kuramoto(*parameters, x, y)
 	assert.InDelta(t, .3, n.dx, float64EqualityThreshold)
 }
 
-func TestUpdateNodeState(t *testing.T) {
+func TestKuramotoUncoupled(t *testing.T) {
 	n := node{
-		circle: canvas.Circle{},
 		dOmega: .7,
 		active: true,
 	}
-	n.dx = .3
 
-	speed := 1 / maxSpeed
-	sigma := 1.
+	parameters := &parameters{
+		nodeCount:   defaultNodeCount,
+		coupling:    0,
+		speed:       defaultSpeed,
+		variability: defaultVariability,
+	}
 
-	n.updateNodeState(dTime, speed, sigma)
-	assert.InDelta(t, .004, n.theta, float64EqualityThreshold)
+	x, y := .1, .2
+	n.kuramoto(*parameters, x, y)
+	assert.InDelta(t, 0, n.dx, float64EqualityThreshold)
 }
 
-func TestUpdatePosition(t *testing.T) {
+func TestPosition(t *testing.T) {
 	n := node{
 		circle: canvas.Circle{},
-		dOmega: .7,
 		active: true,
+		x:      0,
+		y:      1,
 	}
-	n.x, n.y = 0, 1
 
 	radius := float32(100)
 	middle := fyne.NewPos(100, 100)
 
-	n.updatePosition(radius, middle)
-	assert.Equal(t, fyne.NewPos(100, 200), n.circle.Position1)
+	position := n.position(radius, middle)
+	assert.Equal(t, fyne.NewPos(100, 200), position)
+}
+
+func TestSetColorZeroVariability(t *testing.T) {
+	n := node{
+		circle: canvas.Circle{},
+		active: true,
+		dOmega: .75,
+	}
+
+	varibility := 0.
+	n.setColor(varibility)
+	expectedColor := color.CMYK{0x0, 0x0, 0x0, 0xc0}
+
+	assert.Equal(t, expectedColor, n.circle.FillColor)
+}
+
+func TestSetColorMaxVariability(t *testing.T) {
+	n := node{
+		circle: canvas.Circle{},
+		active: true,
+		dOmega: .75,
+	}
+
+	varibility := 1.
+	n.setColor(varibility)
+	expectedColor := color.CMYK{0x40, 0xc0, 0x64, 0x0}
+
+	assert.Equal(t, expectedColor, n.circle.FillColor)
+}
+
+func TestRedrawActive(t *testing.T) {
+	n := node{
+		circle: canvas.Circle{},
+		active: true,
+	}
+
+	beforeState := n.circle
+	position := fyne.NewPos(100, 200)
+	n.redraw(position)
+
+	assert.NotEqual(t, beforeState, n.circle)
+}
+
+func TestRedrawInactive(t *testing.T) {
+	n := node{
+		circle: canvas.Circle{Hidden: true},
+		active: false,
+	}
+
+	beforeState := n.circle
+	position := fyne.NewPos(100, 200)
+	n.redraw(position)
+
+	assert.Equal(t, beforeState, n.circle)
 }

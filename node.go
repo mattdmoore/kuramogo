@@ -9,7 +9,11 @@ import (
 )
 
 const (
+	timeIncrement float64 = .002
 	jitterPercent float32 = 0.15
+
+	maxSpeed    float64 = 10
+	maxCoupling float64 = 3
 )
 
 type node struct {
@@ -20,8 +24,8 @@ type node struct {
 
 	omega  float64
 	dOmega float64
-	dTheta float64
 	theta  float64
+	dTheta float64
 
 	dx float64
 
@@ -29,40 +33,46 @@ type node struct {
 	y float32
 }
 
-func (n *node) kuramoto(k float64, x float64, y float64) {
+func (n *node) kuramoto(p parameters, x float64, y float64) {
 	if n.active {
-		n.dx = (math.Cos(n.theta)*y - math.Sin(n.theta)*x) * k * maxCoupling
+		// This is the Kuramoto model
+		n.dx = (math.Cos(n.theta)*y - math.Sin(n.theta)*x) * p.coupling * maxCoupling
 	} else {
 		n.dx = 0
 	}
-}
-
-func (n *node) updateNodeState(dt float64, speed float64, sigma float64) {
-	n.omega = 1 + n.dOmega*sigma
-	n.dTheta = dt * speed * maxSpeed * (n.omega + n.dx)
+	// Update node state
+	n.omega = 1 + n.dOmega*p.variability
+	n.dTheta = timeIncrement * p.speed * maxSpeed * (n.omega + n.dx)
 	n.theta += n.dTheta
 	n.x = float32(math.Cos(n.theta))
 	n.y = float32(math.Sin(n.theta))
 }
 
-func (n *node) updatePosition(radius float32, middle fyne.Position) {
+func (n *node) position(radius float32, middle fyne.Position) fyne.Position {
+	// Return actual node position on screen
 	x := n.x*(radius-n.jitter*radius*jitterPercent) + middle.X
 	y := n.y*(radius-n.jitter*radius*jitterPercent) + middle.Y
-	n.circle.Move(fyne.NewPos(x, y))
+	return fyne.NewPos(x, y)
 }
 
-func (n *node) redraw(sigma float64) {
-	var yOffsetMultiplier float64 = 100
+func (n *node) setColor(variability float64) {
+	// Set color saturation using variability modifier
+	if n.active {
+		var yOffsetMultiplier float64 = 100
+		n.circle.FillColor = color.CMYK{
+			uint8((n.dOmega + .5) * 256 * variability),
+			uint8((.5 - n.dOmega) * 256 * variability),
+			uint8(yOffsetMultiplier * variability),
+			uint8((.5 - n.dOmega) * 256 * (1 - variability)),
+		}
+	}
+}
 
+func (n *node) redraw(position fyne.Position) {
 	if n.active {
 		n.circle.Show()
-		n.circle.FillColor = color.CMYK{
-			uint8((n.dOmega + .5) * 256 * sigma),
-			uint8((.5 - n.dOmega) * 256 * sigma),
-			uint8(yOffsetMultiplier * sigma),
-			uint8((.5 - n.dOmega) * 256 * (1 - sigma)),
-		}
 		n.circle.Resize(n.size)
+		n.circle.Move(position)
 		n.circle.Refresh()
 	} else {
 		n.circle.Hide()
