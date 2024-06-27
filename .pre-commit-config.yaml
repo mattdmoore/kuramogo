@@ -5,9 +5,7 @@ repos:
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
--   repo: https://github.com/TekWizely/pre-commit-golang
-    rev: v1.0.0-rc.1
+-   repo: https://github.com/golangci/golangci-lint
+    rev: v1.59.1
     hooks:
     -   id: golangci-lint
-        name: golangci-lint
-        entry: golangci-lint run --new-from-rev HEAD --fix
