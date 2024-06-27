@@ -9,3 +9,16 @@ repos:
     rev: v1.59.1
     hooks:
     -   id: golangci-lint
+-   repo: local
+    hooks:
+    -   id: unit-tests
+        name: Run unit tests
+        entry: make test
+        language: system
+        pass_filenames: false
+    -   id: coverage-report
+        name: Generate coverage report
+        entry: make coverage
+        language: system
+        pass_filenames: false
+        verbose: true
