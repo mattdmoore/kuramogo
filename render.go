@@ -38,8 +38,10 @@ func (r *renderer) Layout(_ []fyne.CanvasObject, size fyne.Size) {
 func (r *renderer) getMeanNodePosition() (float64, float64) {
 	var sumX, sumY float32 = 0, 0
 	for _, node := range r.nodes {
-		sumX += node.x
-		sumY += node.y
+		if node.active {
+			sumX += node.x
+			sumY += node.y
+		}
 	}
 	return float64(sumX) / r.n, float64(sumY) / r.n
 }
